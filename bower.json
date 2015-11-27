@@ -1,0 +1,24 @@
+{
+  "name": "putr_web",
+  "version": "0.1",
+  "authors": [
+    "Alexander Minges <alexander.minges@gmail.com>"
+  ],
+  "description": "Simple web frontend to putr",
+  "keywords": [
+    "putr",
+    "osm",
+    "openstreetmap"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  }
+}

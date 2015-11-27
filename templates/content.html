@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block content %}
+      <div class="row">
+        <div class="alert alert-info" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <span class="glyphicon glyphicon-time alert-dismissible" aria-hidden="true"></span>
+          <strong>Last update:</strong> {{time}}
+        </div>
+      </div>
+<!--       <div class="row">
+        <div class="col-md-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-titel">Table of contents</h4>
+            </div>
+            <div class="panel-body">
+              <ol>
+              {% for cat in putr.categories %}
+                <li><a href="#{{cat.type}}">{{cat.name}}</a></li>
+              {% endfor %}
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div> -->
+          {% for cat in putr.categories %}
+          <h3 id="{{cat.type}}">{{cat.name}}</h3>
+            <div class="row">
+            {% if cat.items|length == 0 %}
+              <div class="col-md-12">
+                <div class="panel panel-success">
+                  <div class="panel-heading">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    <strong>Congratulations</strong>
+                  </div>
+                  <div class="panel-body">
+                    No questionable objects found!
+                  </div>
+                </div>
+              </div>
+            {% elif cat.num_errors() > 0 %}
+              <div class="col-md-12">
+                <div class="panel panel-danger">
+                  <div class="panel-heading">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    <strong>Attention needed</strong>
+                  </div>
+                  <div class="panel-body">
+                    {{cat.items|length}} questionable objects found, composed of {{cat.num_errors()}} errors and {{cat.num_notes()}} notes.<br>
+                    List of errors and notes shown below.
+                  </div>
+                </div>
+              </div>
+            {% elif cat.num_errors() == 0 and  cat.num_notes() > 0 %}
+              <div class="col-md-12">
+                <div class="panel panel-warning">
+                  <div class="panel-heading">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    <strong>Please check</strong>
+                  </div>
+                  <div class="panel-body">
+                    {{cat.items|length}} questionable objects found, composed of {{cat.num_errors()}} errors and {{cat.num_notes()}} notes.<br>
+                    List of notes shown below.
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          {% if cat.items|length > 0 %}
+          <h4>Objects with errors or notes</h4>
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-bordered table-hover table-responsive">
+                <thead>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Name</th>
+                  {% if cat.num_errors() > 0 %}
+                  <th>Errors</th>
+                  {% endif %}
+                  {% if cat.num_notes() > 0 %}
+                  <th>Notes</th>
+                  {% endif %}
+                </thead>
+                <tbody>
+                  {% for item in cat.items%}
+                  <tr>
+                    <td><a href="https://www.openstreetmap.org/{{item.type}}/{{item.id}}">{{item.id}}</a></td>
+                    <td>{{item.type}}</td>
+                    <td>{{item.name}}</td>
+                    {% if cat.num_errors() > 0 %}
+                      {% if item.num_errors() > 0 %}
+                      <td class="danger">
+                      {% else %}
+                      <td>
+                      {% endif %}
+                      {% if item.num_errors() > 1 %}
+                        <ul>
+                        {% for error in item.errors %}
+                        <li>
+                        {{error}}
+                        </li>
+                        {% endfor %}
+                        </ul>
+                      {% else %}
+                        {{item.errors[0]}}
+                      {% endif %}
+                      </td>
+                    {% endif %}
+                    {% if cat.num_notes() > 0 %}
+                      {% if item.num_notes() > 0 %}
+                      <td class="warning">
+                      {% else %}
+                      <td>
+                      {% endif %}
+                        {% if item.num_notes() > 1 %}
+                        <ul>
+                        {% for note in item.notes %}
+                        <li>{{note}}</li>
+                        {% endfor %}
+                        </ul>
+                        {% else %}
+                          {{item.notes[0]}}
+                        {% endif %}
+                      </td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+{% endblock %}
